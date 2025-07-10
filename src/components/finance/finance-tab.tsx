@@ -69,7 +69,7 @@ export function FinanceTab() {
       <FinanceCharts transactions={transactions} />
 
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <CardTitle>Recent Transactions</CardTitle>
           <AddTransactionDialog onAddTransaction={addTransaction} />
         </CardHeader>

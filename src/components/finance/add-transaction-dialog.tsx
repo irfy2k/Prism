@@ -72,7 +72,7 @@ export function AddTransactionDialog({ onAddTransaction }: AddTransactionDialogP
               Type
             </Label>
             <Select onValueChange={(value: 'income' | 'expense') => form.setValue('type', value)} defaultValue={form.getValues('type')}>
-              <SelectTrigger className="col-span-3">
+              <SelectTrigger className="col-span-3" id="type" name="type">
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
@@ -85,14 +85,25 @@ export function AddTransactionDialog({ onAddTransaction }: AddTransactionDialogP
             <Label htmlFor="category" className="text-right">
               Category
             </Label>
-            <Input id="category" {...form.register('category')} className="col-span-3" placeholder="e.g., Groceries, Salary" />
+            <Input 
+              id="category" 
+              {...form.register('category')} 
+              className="col-span-3" 
+              placeholder="e.g., Groceries, Salary" 
+            />
             {form.formState.errors.category && <p className="col-span-4 text-right text-xs text-destructive">{form.formState.errors.category.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="amount" className="text-right">
               Amount
             </Label>
-            <Input id="amount" type="number" step="0.01" {...form.register('amount')} className="col-span-3" />
+            <Input 
+              id="amount" 
+              type="number" 
+              step="0.01" 
+              {...form.register('amount', { valueAsNumber: true })} 
+              className="col-span-3" 
+            />
             {form.formState.errors.amount && <p className="col-span-4 text-right text-xs text-destructive">{form.formState.errors.amount.message}</p>}
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
@@ -101,7 +112,13 @@ export function AddTransactionDialog({ onAddTransaction }: AddTransactionDialogP
             </Label>
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="col-span-3 justify-start text-left font-normal">
+                <Button 
+                  variant="outline" 
+                  className="col-span-3 justify-start text-left font-normal"
+                  id="date"
+                  name="date"
+                  type="button"
+                >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {format(new Date(form.watch('date')), 'PPP')}
                 </Button>

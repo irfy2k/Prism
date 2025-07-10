@@ -95,7 +95,7 @@ export function AddHabitDialog({ onAddHabit }: AddHabitDialogProps) {
               Frequency
             </Label>
             <Select onValueChange={(value: 'daily' | 'weekly') => form.setValue('frequency', value)} defaultValue={form.getValues('frequency')}>
-              <SelectTrigger className="col-span-3">
+              <SelectTrigger className="col-span-3" id="frequency" name="frequency">
                 <SelectValue placeholder="Select frequency" />
               </SelectTrigger>
               <SelectContent>

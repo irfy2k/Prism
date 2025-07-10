@@ -100,7 +100,7 @@ export function AddTaskDialog({ onAddTask }: AddTaskDialogProps) {
               Priority
             </Label>
             <Select onValueChange={(value: 'low' | 'medium' | 'high') => form.setValue('priority', value)} defaultValue={form.getValues('priority')}>
-              <SelectTrigger className="col-span-3">
+              <SelectTrigger className="col-span-3" id="priority" name="priority">
                 <SelectValue placeholder="Select priority" />
               </SelectTrigger>
               <SelectContent>
@@ -115,7 +115,7 @@ export function AddTaskDialog({ onAddTask }: AddTaskDialogProps) {
               Repeats
             </Label>
             <Select onValueChange={(value: 'none' | 'daily' | 'weekly' | 'monthly') => form.setValue('recurrence', value)} defaultValue={form.getValues('recurrence')}>
-              <SelectTrigger className="col-span-3">
+              <SelectTrigger className="col-span-3" id="recurrence" name="recurrence">
                 <SelectValue placeholder="Select recurrence" />
               </SelectTrigger>
               <SelectContent>
