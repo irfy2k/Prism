@@ -7,6 +7,7 @@ import { AddTransactionDialog } from './add-transaction-dialog';
 import { FinanceCharts } from './finance-charts';
 import { TransactionList } from './transaction-list';
 import { useMemo } from 'react';
+import { safeParseDate } from '@/lib/utils';
 
 export function FinanceTab() {
   const [transactions, setTransactions] = useLocalStorage<Transaction[]>('transactions', []);
@@ -16,7 +17,12 @@ export function FinanceTab() {
       ...transaction,
       id: crypto.randomUUID(),
     };
-    setTransactions(prev => [newTransaction, ...prev].sort((a,b) => new Date(b.date).getTime() - new Date(a.date).getTime()));
+    setTransactions(prev => [newTransaction, ...prev].sort((a,b) => {
+      const dateA = safeParseDate(a.date).getTime();
+      const dateB = safeParseDate(b.date).getTime();
+      
+      return dateB - dateA;
+    }));
   };
   
   const deleteTransaction = (id: string) => {

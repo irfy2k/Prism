@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Trash2, ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { Badge } from '../ui/badge';
-import { cn } from '@/lib/utils';
+import { cn, safeParseDate } from '@/lib/utils';
 
 interface TransactionListProps {
   transactions: Transaction[];
@@ -55,7 +55,7 @@ export function TransactionList({ transactions, onDeleteTransaction }: Transacti
               <TableCell>
                 <Badge variant="secondary">{t.category}</Badge>
               </TableCell>
-              <TableCell>{format(new Date(t.date), 'MMM d, yyyy')}</TableCell>
+              <TableCell>{format(safeParseDate(t.date), 'MMM d, yyyy')}</TableCell>
               <TableCell className={cn("text-right font-medium", t.type === 'income' ? 'text-positive' : 'text-destructive')}>
                 {t.amount.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}
               </TableCell>

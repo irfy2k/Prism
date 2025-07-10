@@ -28,6 +28,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon, PlusCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { AddTaskSchema, Task } from '@/lib/types';
+import { safeParseDate, isValidDate } from '@/lib/utils';
 
 interface AddTaskDialogProps {
   onAddTask: (task: Omit<Task, 'id' | 'completed'>) => void;
@@ -82,14 +83,32 @@ export function AddTaskDialog({ onAddTask }: AddTaskDialogProps) {
               <PopoverTrigger asChild>
                 <Button variant="outline" className="col-span-3 justify-start text-left font-normal">
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {format(new Date(form.watch('dueDate')), 'PPP')}
+                  {(() => {
+                    try {
+                      const dateValue = form.watch('dueDate');
+                      return isValidDate(dateValue) ? format(safeParseDate(dateValue), 'PPP') : 'Select date';
+                    } catch (error) {
+                      return 'Select date';
+                    }
+                  })()}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={new Date(form.watch('dueDate'))}
-                  onSelect={(date) => form.setValue('dueDate', date?.toISOString() || '')}
+                  selected={(() => {
+                    try {
+                      const dateValue = form.watch('dueDate');
+                      return isValidDate(dateValue) ? safeParseDate(dateValue) : undefined;
+                    } catch (error) {
+                      return undefined;
+                    }
+                  })()}
+                  onSelect={(date) => {
+                    if (date) {
+                      form.setValue('dueDate', date.toISOString());
+                    }
+                  }}
                   initialFocus
                 />
               </PopoverContent>

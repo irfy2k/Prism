@@ -4,7 +4,8 @@ import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Legend, Responsive
 import type { Transaction } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { useMemo } from 'react';
-import { format, parseISO, startOfMonth } from 'date-fns';
+import { format, startOfMonth } from 'date-fns';
+import { safeParseDate } from '@/lib/utils';
 import {
   ChartContainer,
   ChartTooltip as ChartTooltipPrimitive,
@@ -22,11 +23,17 @@ export function FinanceCharts({ transactions }: FinanceChartsProps) {
     const dataByMonth: { [key: string]: { name: string; income: number; expense: number } } = {};
     
     transactions.forEach(t => {
-      const month = format(startOfMonth(parseISO(t.date)), 'MMM yyyy');
-      if (!dataByMonth[month]) {
-        dataByMonth[month] = { name: format(startOfMonth(parseISO(t.date)),'MMM'), income: 0, expense: 0 };
+      try {
+        const date = safeParseDate(t.date);
+        const month = format(startOfMonth(date), 'MMM yyyy');
+        if (!dataByMonth[month]) {
+          dataByMonth[month] = { name: format(startOfMonth(date),'MMM'), income: 0, expense: 0 };
+        }
+        dataByMonth[month][t.type] += t.amount;
+      } catch (error) {
+        console.warn('Invalid date in transaction:', t.date);
+        // Skip transactions with invalid dates
       }
-      dataByMonth[month][t.type] += t.amount;
     });
 
     return Object.values(dataByMonth).reverse();

@@ -28,6 +28,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { CalendarIcon, PlusCircle } from 'lucide-react';
 import { format } from 'date-fns';
 import { AddTransactionSchema, Transaction } from '@/lib/types';
+import { safeParseDate, isValidDate } from '@/lib/utils';
 
 interface AddTransactionDialogProps {
   onAddTransaction: (transaction: Omit<Transaction, 'id'>) => void;
@@ -120,14 +121,32 @@ export function AddTransactionDialog({ onAddTransaction }: AddTransactionDialogP
                   type="button"
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
-                  {format(new Date(form.watch('date')), 'PPP')}
+                  {(() => {
+                    try {
+                      const dateValue = form.watch('date');
+                      return isValidDate(dateValue) ? format(safeParseDate(dateValue), 'PPP') : 'Select date';
+                    } catch (error) {
+                      return 'Select date';
+                    }
+                  })()}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0">
                 <Calendar
                   mode="single"
-                  selected={new Date(form.watch('date'))}
-                  onSelect={(date) => form.setValue('date', date?.toISOString() || '')}
+                  selected={(() => {
+                    try {
+                      const dateValue = form.watch('date');
+                      return isValidDate(dateValue) ? safeParseDate(dateValue) : undefined;
+                    } catch (error) {
+                      return undefined;
+                    }
+                  })()}
+                  onSelect={(date) => {
+                    if (date) {
+                      form.setValue('date', date.toISOString());
+                    }
+                  }}
                   initialFocus
                 />
               </PopoverContent>
